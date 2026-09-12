@@ -1,17 +1,19 @@
 import 'reflect-metadata';
 import express from 'express';
-import dotenv from 'dotenv';
+import { AppDataSource } from './database/data-source';
+import routes from './routes/routes'; // <-- 1. Importamos as rotas
 
-// Carrega as variáveis do arquivo .env
-dotenv.config();
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
+    
+    const app = express();
 
-const app = express();
+    app.use(express.json()); // <-- 2. Ensinamos o Express a ler JSON
+    app.use(routes);         // <-- 3. Injetamos as nossas rotas
 
-// Permite que nossa API entenda requisições no formato JSON
-app.use(express.json());
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando com sucesso na porta ${PORT}`);
-});
+    app.listen(3000, () => {
+      console.log('🚀 Servidor rodando na porta 3000');
+    });
+  })
+  .catch((error) => console.log('Erro ao conectar com o banco de dados:', error));
