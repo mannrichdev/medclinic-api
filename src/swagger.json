@@ -1,0 +1,220 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MedClinic API",
+    "description": "Documentação oficial das rotas de gestão de pacientes, autenticação e agendamentos médicos.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Cadastrar novo usuário/médico",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuário criado com sucesso" },
+          "400": { "description": "Erro de validação ou e-mail já existente" }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Autenticação e geração de JWT",
+        "tags": ["Autenticação"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login realizado com sucesso" },
+          "400": { "description": "Credenciais inválidas" }
+        }
+      }
+    },
+    "/patients": {
+      "get": {
+        "summary": "Listar todos os pacientes",
+        "tags": ["Pacientes"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de pacientes cadastrados" }
+        }
+      },
+      "post": {
+        "summary": "Cadastrar novo paciente",
+        "tags": ["Pacientes"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "phone": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Paciente cadastrado com sucesso" }
+        }
+      }
+    },
+    "/patients/{id}": {
+      "get": {
+        "summary": "Buscar paciente por ID",
+        "tags": ["Pacientes"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Dados do paciente" },
+          "404": { "description": "Paciente não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar paciente",
+        "tags": ["Pacientes"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "phone": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Paciente atualizado com sucesso" }
+        }
+      },
+      "delete": {
+        "summary": "Remover paciente",
+        "tags": ["Pacientes"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Paciente removido com sucesso" }
+        }
+      }
+    },
+    "/appointments": {
+      "get": {
+        "summary": "Listar agendamentos com médicos e pacientes populados",
+        "tags": ["Agendamentos"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de agendamentos da clínica" }
+        }
+      },
+      "post": {
+        "summary": "Criar novo agendamento de consulta",
+        "tags": ["Agendamentos"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appointment_date": { "type": "string", "format": "date-time" },
+                  "user_id": { "type": "string" },
+                  "patient_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Agendamento criado com sucesso" },
+          "400": { "description": "Conflito de horário ou entidade não encontrada" }
+        }
+      }
+    },
+    "/appointments/{id}": {
+      "delete": {
+        "summary": "Cancelar/Excluir agendamento",
+        "tags": ["Agendamentos"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Agendamento cancelado com sucesso" },
+          "400": { "description": "Agendamento não encontrado" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -2,27 +2,54 @@ import { Router, Request, Response } from 'express';
 import { UserController } from '../controllers/UserController';
 import { AuthController } from '../controllers/AuthController';
 import { PatientController } from '../controllers/PatientController';
+import { AppointmentController } from '../controllers/AppointmentController';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import { roleMiddleware } from '../middlewares/roleMiddleware';
 
 const routes = Router();
+
 const userController = new UserController();
 const authController = new AuthController();
 const patientController = new PatientController();
+const appointmentController = new AppointmentController();
 
-// Rotas públicas
+// ==========================================
+// ROTAS PÚBLICAS
+// ==========================================
 routes.post('/users', userController.create);
 routes.post('/login', authController.authenticate);
 
-// Rotas protegidas
-routes.get('/perfil', authMiddleware, (req: Request, res: Response) => {
-  return res.json({ mensagem: 'Você acessou uma área VIP da MedClinic!' });
+// ==========================================
+// ROTAS DE VERIFICAÇÃO E RBAC (REQUISITO RF10)
+// ==========================================
+// Retorna os dados do usuário autenticado a partir do token enviado
+routes.get('/users/me', authMiddleware, (req: Request, res: Response) => {
+  const user = (req as any).user;
+  return res.json({
+    id: user?.id,
+    mensagem: 'Dados do usuário autenticado recuperados com sucesso.'
+  });
 });
 
-// CRUD Pacientes
+// Endpoint de teste restrito exclusivamente ao perfil Administrador
+routes.get('/admin/ping', authMiddleware, roleMiddleware(['ADMIN']), (req: Request, res: Response) => {
+  return res.json({ mensagem: 'Pong! Acesso concedido exclusivamente ao perfil Administrador.' });
+});
+
+// ==========================================
+// CRUD DE PACIENTES (ROTAS PROTEGIDAS)
+// ==========================================
 routes.post('/patients', authMiddleware, patientController.create);
 routes.get('/patients', authMiddleware, patientController.list);
 routes.get('/patients/:id', authMiddleware, patientController.show);
 routes.put('/patients/:id', authMiddleware, patientController.update);
 routes.delete('/patients/:id', authMiddleware, patientController.delete);
+
+// ==========================================
+// GESTÃO DE AGENDAMENTOS (ROTAS PROTEGIDAS)
+// ==========================================
+routes.post('/appointments', authMiddleware, appointmentController.create);
+routes.get('/appointments', authMiddleware, appointmentController.list);
+routes.delete('/appointments/:id', authMiddleware, appointmentController.delete);
 
 export default routes;

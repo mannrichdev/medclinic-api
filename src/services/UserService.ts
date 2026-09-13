@@ -1,34 +1,34 @@
+import { hash } from 'bcryptjs';
 import { userRepository } from '../repositories/userRepository';
-import bcrypt from 'bcryptjs';
 
-// Tipagem para garantir que o serviço receba os dados corretos
 interface ICreateUserRequest {
   name: string;
   email: string;
-  password_hash: string;
+  password?: string;
 }
 
 export class UserService {
-  async execute({ name, email, password_hash }: ICreateUserRequest) {
-    // 1. Verifica se o e-mail já está cadastrado
-    const userExists = await userRepository.findOneBy({ email });
-    if (userExists) {
-      throw new Error('Já existe um usuário com este e-mail');
+  async create({ name, email, password }: ICreateUserRequest) {
+    if (!password) {
+      throw new Error('A senha é obrigatória');
     }
 
-    // 2. Criptografa a senha (complexidade 8)
-    const hashedPassword = await bcrypt.hash(password_hash, 8);
+    const userExists = await userRepository.findOneBy({ email });
+    if (userExists) {
+      throw new Error('E-mail já cadastrado');
+    }
 
-    // 3. Prepara o novo usuário na memória
+    const passwordHash = await hash(password, 8);
+
     const user = userRepository.create({
       name,
       email,
-      password_hash: hashedPassword,
+      password: passwordHash,
     });
 
-    // 4. Salva de fato no banco de dados
     await userRepository.save(user);
 
-    return user;
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }

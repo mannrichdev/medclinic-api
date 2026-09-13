@@ -3,20 +3,15 @@ import { AuthService } from '../services/AuthService';
 
 export class AuthController {
   async authenticate(req: Request, res: Response) {
-    const { email, password_hash } = req.body;
+    const { email, password } = req.body;
 
     try {
       const authService = new AuthService();
-      
-      const auth = await authService.execute({
-        email,
-        password_hash
-      });
-
-      return res.status(200).json(auth);
+      const result = await authService.execute({ email, password });
+      return res.json(result);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(401).json({ error: error.message }); // 401: Unauthorized
+        return res.status(400).json({ error: error.message });
       }
       return res.status(500).json({ error: 'Erro interno do servidor' });
     }

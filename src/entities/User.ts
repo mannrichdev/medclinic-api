@@ -1,22 +1,27 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
+export type UserRole = 'ADMIN' | 'ATENDENTE';
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
-  @Column({ type: 'varchar' }) // <-- Declarando o tipo explicitamente
-  name: string;
+  @Column()
+  name!: string;
 
-  @Column({ type: 'varchar', unique: true }) // <-- Declarando aqui também
-  email: string;
+  @Column({ unique: true })
+  email!: string;
 
-  @Column({ type: 'varchar' }) // <-- E aqui
-  password_hash: string;
+  @Column()
+  password!: string;
+
+  @Column({ type: 'varchar', default: 'ATENDENTE' })
+  role!: UserRole;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }

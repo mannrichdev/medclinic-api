@@ -1,24 +1,40 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken';
 
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Pega o token enviado no cabeçalho da requisição
-  const { authorization } = req.headers;
+interface TokenPayload {
+  iat: number;
+  exp: number;
+  sub: string;
+  role?: string;
+}
 
-  if (!authorization) {
-    return res.status(401).json({ error: 'Token não fornecido' });
+export const authMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Token de autenticação não fornecido' });
   }
 
-  // O padrão é "Bearer <token>". O split separa a palavra do token em si.
-  const [, token] = authorization.split(' ');
+  const [, token] = authHeader.split(' ');
 
   try {
-    // Tenta validar o token com a nossa chave secreta
-    jwt.verify(token, process.env.JWT_SECRET as string);
-    
-    // Se for válido, deixa a requisição continuar para o Controller
+    const secret = process.env.JWT_SECRET || 'default_secret';
+    const decoded = verify(token, secret);
+
+    const { sub, role } = decoded as TokenPayload;
+
+    // Anexa as informações do usuário autenticado no objeto req
+    (req as any).user = {
+      id: sub,
+      role: role,
+    };
+
     return next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({ error: 'Token inválido ou expirado' });
   }
-}
+};

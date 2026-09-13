@@ -3,21 +3,12 @@ import { UserService } from '../services/UserService';
 
 export class UserController {
   async create(req: Request, res: Response) {
-    const { name, email, password_hash } = req.body;
+    const { name, email, password } = req.body;
 
     try {
       const userService = new UserService();
-      
-      const user = await userService.execute({
-        name,
-        email,
-        password_hash
-      });
-
-      // Por segurança, removemos o hash da senha da resposta que volta para o usuário
-      const { password_hash: _, ...userWithoutPassword } = user;
-
-      return res.status(201).json(userWithoutPassword);
+      const user = await userService.create({ name, email, password });
+      return res.status(201).json(user);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });
