@@ -1,3 +1,7 @@
+/**
+ * Middleware para validacao do token JWT enviado no cabecalho Authorization.
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 
