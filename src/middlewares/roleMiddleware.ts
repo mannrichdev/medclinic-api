@@ -1,3 +1,7 @@
+/**
+ * Middleware de autorizacao RBAC para verificar permissoes de perfil (ADMIN / ATENDENTE).
+ */
+
 import { Request, Response, NextFunction } from 'express';
 
 export const roleMiddleware = (rolesPermitidas: string[]) => {
