@@ -1,3 +1,7 @@
+/**
+ * Controller responsavel pelo gerenciamento de usuarios e perfis de acesso.
+ */
+
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 
