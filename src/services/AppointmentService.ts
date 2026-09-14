@@ -8,6 +8,8 @@ interface ICreateAppointmentRequest {
   patient_id: string;
 }
 
+// Valida a disponibilidade do horario antes de salvar o agendamento
+
 export class AppointmentService {
   async create({ appointment_date, user_id, patient_id }: ICreateAppointmentRequest) {
     const userExists = await userRepository.findOneBy({ id: user_id });
