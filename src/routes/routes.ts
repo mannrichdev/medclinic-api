@@ -68,3 +68,12 @@ routes.get('/appointments', authMiddleware, (req: Request, res: Response) => app
 routes.get('/appointments/:id', authMiddleware, (req: Request, res: Response) => appointmentController.show(req, res));
 routes.delete('/appointments/:id', authMiddleware, (req: Request, res: Response) => appointmentController.delete(req, res));
 export default routes;
+
+import { ReportController } from '../controllers/ReportController';
+const reportController = new ReportController();
+
+// ==========================================
+// MÓDULO De RELATÓRIOS (ROTAS PROTEGIDAS)
+// ==========================================
+routes.get('/reports/summary', authMiddleware, (req: Request, res: Response) => reportController.summary(req, res));
+routes.get('/reports/appointments', authMiddleware, (req: Request, res: Response) => reportController.appointmentsReport(req, res));
