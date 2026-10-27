@@ -7,15 +7,18 @@ import { AppDataSource } from './database/data-source';
 import swaggerDocument from './swagger.json';
 import { corsOptions } from './config/cors';
 import { globalRateLimiter, authRateLimiter } from './middlewares/ratelimiter';
+import { httpLogger } from './middlewares/httpLogger';
+import { logger } from './config/logger';
 
 const app = express();
 
-// Middlewares básicos e de segurança (aplicados antes das rotas)
+// Middlewares globais de segurança e logging
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(globalRateLimiter);
+app.use(httpLogger);
 
-// Rate Limiting específico para rotas sensíveis de autenticação
+// Rate Limiting específico para rotas sensíveis
 app.use('/auth/login', authRateLimiter);
 app.use('/auth/register', authRateLimiter);
 
@@ -27,10 +30,10 @@ app.use(routes);
 
 AppDataSource.initialize()
   .then(() => {
-    console.log('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
+    logger.info('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
     app.listen(3000, () => {
-      console.log('🚀 Servidor rodando na porta 3000');
-      console.log('📄 Documentação Swagger disponível em: http://localhost:3000/docs');
+      logger.info('🚀 Servidor rodando na porta 3000');
+      logger.info('📄 Documentação Swagger disponível em: http://localhost:3000/docs');
     });
   })
-  .catch((error) => console.log('Erro ao conectar com o banco:', error));
+  .catch((error) => logger.error('Erro ao conectar com o banco de dados: %o', error));
