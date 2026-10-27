@@ -3,6 +3,7 @@ import { UserController } from '../controllers/UserController';
 import { AuthController } from '../controllers/AuthController';
 import { PatientController } from '../controllers/PatientController';
 import { AppointmentController } from '../controllers/AppointmentController';
+import { SpecialtyController } from '../controllers/SpecialtyController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { roleMiddleware } from '../middlewares/roleMiddleware';
 
@@ -12,6 +13,7 @@ const userController = new UserController();
 const authController = new AuthController();
 const patientController = new PatientController();
 const appointmentController = new AppointmentController();
+const specialtyController = new SpecialtyController();
 
 // ==========================================
 // ROTAS PÚBLICAS
@@ -44,6 +46,12 @@ routes.get('/patients', authMiddleware, patientController.list);
 routes.get('/patients/:id', authMiddleware, patientController.show);
 routes.put('/patients/:id', authMiddleware, patientController.update);
 routes.delete('/patients/:id', authMiddleware, patientController.delete);
+
+// ==========================================
+// GESTÃO DE ESPECIALIDADES (ROTAS PROTEGIDAS)
+// ==========================================
+routes.post('/specialties', authMiddleware, (req: Request, res: Response) => specialtyController.create(req, res));
+routes.get('/specialties', authMiddleware, (req: Request, res: Response) => specialtyController.list(req, res));
 
 // ==========================================
 // GESTÃO DE AGENDAMENTOS (ROTAS PROTEGIDAS)
