@@ -63,8 +63,8 @@ routes.get('/doctors/:id', authMiddleware, (req: Request, res: Response) => doct
 // ==========================================
 // GESTÃO DE AGENDAMENTOS (ROTAS PROTEGIDAS)
 // ==========================================
-routes.post('/appointments', authMiddleware, appointmentController.create);
-routes.get('/appointments', authMiddleware, appointmentController.list);
-routes.delete('/appointments/:id', authMiddleware, appointmentController.delete);
-
+routes.post('/appointments', authMiddleware, (req: Request, res: Response) => appointmentController.create(req, res));
+routes.get('/appointments', authMiddleware, (req: Request, res: Response) => appointmentController.list(req, res));
+routes.get('/appointments/:id', authMiddleware, (req: Request, res: Response) => appointmentController.show(req, res));
+routes.delete('/appointments/:id', authMiddleware, (req: Request, res: Response) => appointmentController.delete(req, res));
 export default routes;
