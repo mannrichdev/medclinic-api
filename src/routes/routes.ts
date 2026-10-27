@@ -41,11 +41,11 @@ routes.get('/admin/ping', authMiddleware, roleMiddleware(['ADMIN']), (req: Reque
 // ==========================================
 // CRUD DE PACIENTES (ROTAS PROTEGIDAS)
 // ==========================================
-routes.post('/patients', authMiddleware, patientController.create);
-routes.get('/patients', authMiddleware, patientController.list);
-routes.get('/patients/:id', authMiddleware, patientController.show);
-routes.put('/patients/:id', authMiddleware, patientController.update);
-routes.delete('/patients/:id', authMiddleware, patientController.delete);
+routes.post('/patients', authMiddleware, (req: Request, res: Response) => patientController.create(req, res));
+routes.get('/patients', authMiddleware, (req: Request, res: Response) => patientController.list(req, res));
+routes.get('/patients/:id', authMiddleware, (req: Request, res: Response) => patientController.show(req, res));
+routes.put('/patients/:id', authMiddleware, (req: Request, res: Response) => patientController.update(req, res));
+routes.delete('/patients/:id', authMiddleware, (req: Request, res: Response) => patientController.delete(req, res));
 
 // ==========================================
 // GESTÃO DE ESPECIALIDADES (ROTAS PROTEGIDAS)
