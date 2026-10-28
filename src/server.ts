@@ -12,22 +12,23 @@ import { logger } from './config/logger';
 
 const app = express();
 
-// Middlewares globais de segurança e logging
+// Middlewares globais de segurança, parsing e logging
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(globalRateLimiter);
 app.use(httpLogger);
 
-// Rate Limiting específico para rotas sensíveis
-app.use('/auth/login', authRateLimiter);
-app.use('/auth/register', authRateLimiter);
+// Rate Limiting específico para rotas de autenticação e criação de conta
+app.use('/login', authRateLimiter);
+app.use('/users', authRateLimiter);
 
-// Documentação da API
+// Documentação da API com Swagger UI
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Rotas principais
+// Rotas da aplicação
 app.use(routes);
 
+// Inicialização do Banco de Dados e Servidor
 AppDataSource.initialize()
   .then(() => {
     logger.info('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
@@ -36,4 +37,6 @@ AppDataSource.initialize()
       logger.info('📄 Documentação Swagger disponível em: http://localhost:3000/docs');
     });
   })
-  .catch((error) => logger.error('Erro ao conectar com o banco de dados: %o', error));
+  .catch((error) => {
+    logger.error('Erro ao conectar com o banco de dados: %o', error);
+  });
