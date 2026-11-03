@@ -9,7 +9,7 @@ API RESTful para gestão de clínica médica desenvolvida em Node.js e TypeScrip
 - 🌐 **API em Produção (Render):** https://medclinic-api-cr9k.onrender.com
 - 📖 **Documentação Swagger:** https://medclinic-api-cr9k.onrender.com/docs
 - 📌 **Quadro Kanban (GitHub Projects / Trello):** [(https://github.com/users/mannrichdev/projects/2/views/1)]
-- 📹 **Vídeo Demonstrativo (Google Drive):** [Link em Breve - Gravação em Andamento]
+- 📹 **Vídeo Demonstrativo (Google Drive):** [(https://drive.google.com/drive/folders/1jG2yrZsg_Rpov7vmNjuvWzkQGubXrlvf?usp=sharing)]
 
 ---
 
