@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: medclinic-api
+    env: node
+    region: ohio
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: medclinic-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: medclinic-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: medclinic-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: medclinic-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: medclinic-db
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: medclinic-db
+    databaseName: medclinic
+    user: postgres
+    plan: free
