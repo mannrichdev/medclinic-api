@@ -36,4 +36,5 @@ databases:
   - name: medclinic-db
     databaseName: medclinic
     user: medclinic_user
+    region: ohio
     plan: free
