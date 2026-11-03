@@ -9,20 +9,26 @@ import {
 @Entity('patients')
 export class Patient {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'varchar' })
-  name: string;
+  name!: string;
+
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  cpf!: string;
 
   @Column({ type: 'varchar', unique: true })
-  email: string;
+  email!: string;
 
-  @Column({ type: 'varchar' })
-  phone: string;
+  @Column({ type: 'varchar', nullable: true })
+  phone!: string;
+
+  @Column({ type: 'date', nullable: true })
+  birth_date!: Date;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }
