@@ -35,5 +35,5 @@ services:
 databases:
   - name: medclinic-db
     databaseName: medclinic
-    user: postgres
+    user: medclinic_user
     plan: free
